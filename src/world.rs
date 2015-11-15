@@ -58,19 +58,7 @@ impl World {
         World::new(cells)
     }
 
-    pub fn to_string(&self, top_left: Coordinate, bottom_right: Coordinate) -> String {
-        let Coordinate(left_x, top_y) = top_left;
-        let Coordinate(right_x, bottom_y) = bottom_right;
-
-        (left_x..right_x).map(|i| {
-            (top_y..bottom_y).map(|j| {
-                self.get(Coordinate(i, j)).to_char()
-            }).collect::<String>()
-        }).collect::<Vec<String>>()
-        .connect("\n")
-    }
-
-    fn get(&self, coordinate: Coordinate) -> Box<Cell> {
+    pub fn get(&self, coordinate: Coordinate) -> Box<Cell> {
         self.alive_cells
             .get(&coordinate)
             .map_or(Box::new(DeadCell), |cell| Box::new(*cell))

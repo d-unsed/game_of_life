@@ -2,10 +2,12 @@ use std::thread;
 
 mod cell;
 mod coordinate;
+mod display;
 mod neighbours;
 mod world;
 
 use coordinate::Coordinate;
+use display::Display;
 use world::World;
 
 fn main() {
@@ -21,9 +23,7 @@ fn main() {
     let mut world = World::new(coords);
 
     loop {
-        print!("{}[", '\x1B');
-        print!("2J");
-        println!("{}", world.to_string(Coordinate(0, 0), Coordinate(30, 30)));
+        Display::new(&world, Coordinate(0, 0), Coordinate(30, 30)).render();
 
         world = world.next_generation();
 
