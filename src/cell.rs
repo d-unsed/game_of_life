@@ -10,10 +10,10 @@ pub trait Cell {
     fn to_char(&self) -> char;
 
     fn next_generation(&self, neighbours: Neighbours) -> Option<AliveCell> {
-        let NeighboursToSurvive(mut r) = self.suitable_neighbours_count();
-        let alive_count = neighbours.alive_count();
+        let NeighboursToSurvive(mut range) = self.suitable_neighbours_count();
+        let alive_neighbours_count = neighbours.alive_count();
 
-        r.find(|n| CellsCount(*n) == alive_count).map(|_| AliveCell)
+        range.find(|n| alive_neighbours_count == CellsCount(*n)).map(|_| AliveCell)
     }
 }
 
