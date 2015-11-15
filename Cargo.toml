@@ -1,0 +1,4 @@
+[package]
+name = "attempt"
+version = "0.1.0"
+authors = ["Dmitry Gritsay <dmitry@vinted.com>"]
