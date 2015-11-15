@@ -1,3 +1,5 @@
+use itertools::Itertools;
+
 use std::collections::HashMap;
 
 use cell::{Cell, AliveCell, DeadCell};
@@ -28,19 +30,14 @@ impl World {
             // Get cordinates of all alive cells and their neighbours
             // (potentially alive cells for next generation)
             .flat_map(|(coordinate, _)| {
-                // coordinate.for_neighbours // Coordinates
-                (-1..2).flat_map(|i| {
-                    (-1..2).map(|j| {
-                        coordinate.shift_by(Coordinate(i, j))
-                    }).collect::<Vec<Coordinate>>()
+                iproduct!(-1..2, -1..2).map(|(x, y)| {
+                    coordinate.shift_by(Coordinate(x, y))
                 }).collect::<Vec<Coordinate>>()
-            // Get vectors of neighbours for "potentially alive" cells
+            // Get vectors of alive neighbours for "potentially alive" cells
             }).map(|coordinate| {
                 let neighbours =
-                    (-1..2).flat_map(|i| {
-                        (-1..2).filter_map(|j| {
-                            self.alive_cells.get(&coordinate.shift_by(Coordinate(i, j)))
-                        }).collect::<Vec<&AliveCell>>()
+                    iproduct!(-1..2, -1..2).filter_map(|(x, y)| {
+                        self.alive_cells.get(&coordinate.shift_by(Coordinate(x, y)))
                     }).collect::<Vec<&AliveCell>>();
 
                 (coordinate, Neighbours::new(neighbours))
@@ -90,15 +87,5 @@ mod tests {
         let new_coordinates: Vec<&Coordinate> = new_world.alive_cells.keys().collect();
 
         assert_eq!(new_coordinates, vec![&Coordinate(1, 2), &Coordinate(1, 0), &Coordinate(1, 1)]);
-    }
-
-    #[test]
-    fn it_converts_to_string() {
-        let coordinates = vec![Coordinate(0, 1), Coordinate(1, 1), Coordinate(2, 1)];
-        let world = World::new(coordinates);
-
-        let w = world.to_string(Coordinate(0, 0), Coordinate(3, 3));
-
-        assert_eq!(w, "+X+\n+X+\n+X+".to_string());
     }
 }
